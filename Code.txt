@@ -1,0 +1,267 @@
+package citybust;
+import javax.swing.*;
+import javax.swing.JFrame;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+public class Scene2 extends JFrame{
+    Image back;
+    Thread backgroundMoves;
+    Image Mario;
+    int getX=10;
+    Thread Gravity;
+    boolean PlayerExists=true;
+    int EnemyHealth[]={40,40,40};
+    int EnemyX[] = {400,600,700};
+    int getY=710;
+    boolean Fossil=false;
+    boolean EnemyExists[] = {true,true,true};
+    boolean Enemypos[]={false,false,false};
+    boolean attack=false;
+    static int PlayerHealth=100;
+    boolean pos[]={false,false};
+    Image Enemy[]={null,null,null};
+    Thread t = null;
+       int Fossils=0;
+    int Turtle=0;
+    PlayerJournal pl = new PlayerJournal(Fossils,Turtle);
+    public Scene2(int PlayerHealth,int Fossils){
+        this.Fossils=Fossils;
+        this.PlayerHealth = PlayerHealth;
+        repaint();
+        EnemyMove MoveE = new EnemyMove();
+        t = new Thread(MoveE);
+        t.start();
+        setFocusable(true);
+        PlayerMove move = new PlayerMove();
+        addKeyListener(move);
+    }
+    public void paint(Graphics g){
+        g.setColor(Color.WHITE);
+          Events event = new Events();
+          PlayerExists=event.Death(PlayerHealth,PlayerExists);
+          if(Enemypos[0]==false){
+        Enemy[0]=new ImageIcon("C:\\Hrishikesh\\Programming\\Java\\CityBust\\src\\citybust\\enemy1.png").getImage();
+        }
+        else{
+        Enemy[0]=new ImageIcon("C:\\Hrishikesh\\Programming\\Java\\CityBust\\src\\citybust\\enemy2.png").getImage();
+        }
+         if(Enemypos[1]==false){
+        Enemy[1]=new ImageIcon("C:\\Hrishikesh\\Programming\\Java\\CityBust\\src\\citybust\\enemy1.png").getImage();
+        }
+        else{
+        Enemy[1]=new ImageIcon("C:\\Hrishikesh\\Programming\\Java\\CityBust\\src\\citybust\\enemy2.png").getImage();
+        }
+         if(Enemypos[2]==false){
+        Enemy[2]=new ImageIcon("C:\\Hrishikesh\\Programming\\Java\\CityBust\\src\\citybust\\enemy1.png").getImage();
+        }
+        else{
+        Enemy[2]=new ImageIcon("C:\\Hrishikesh\\Programming\\Java\\CityBust\\src\\citybust\\enemy2.png").getImage();
+        }
+         if(attack==true&&pos[0]==false){
+        Mario=new ImageIcon("C:\\Hrishikesh\\Programming\\Java\\CityBust\\src\\citybust\\attack.png").getImage();
+        attack=false;
+    }
+      else if(attack==true&&pos[0]==true){
+        Mario=new ImageIcon("C:\\Hrishikesh\\Programming\\Java\\CityBust\\src\\citybust\\attack1.png").getImage();
+        attack=false;
+    }
+       else if(pos[0]==false&&PlayerExists==true&&attack==false){
+    Mario=new ImageIcon("C:\\Hrishikesh\\Programming\\Java\\CityBust\\src\\citybust\\char 2.png").getImage();
+    }
+    else if(pos[0]==true&&PlayerExists==true&&attack==false){
+    Mario=new ImageIcon("C:\\Hrishikesh\\Programming\\Java\\CityBust\\src\\citybust\\char.png").getImage();
+    }
+        back = new ImageIcon("C:\\Hrishikesh\\Programming\\Java\\CityBust\\src\\citybust\\grid.png").getImage();
+        g.drawImage(back, 0,0,1000,800,null);
+        g.drawImage(Mario, getX, getY,50,50, null);
+         if(EnemyExists[0]==true){
+         g.drawImage(Enemy[0],EnemyX[0], 710,50,50, rootPane);
+         }
+         else{
+             
+         }
+         
+          if(EnemyExists[1]==true){
+         g.drawImage(Enemy[1],EnemyX[1], 710,50,50, rootPane);
+         }
+         else{
+             
+         }
+           if(EnemyExists[2]==true){
+         g.drawImage(Enemy[2],EnemyX[2], 710,50,50, rootPane);
+         }
+         else{
+             
+         }
+       
+        g.drawString("Player Health "+PlayerHealth, 10,50);
+        if(PlayerExists==false){
+            getX=2000;
+            getY=100000;
+            g.drawString("Mario Died",10,70);
+        }
+        if(event.CollisionDetect(getX, EnemyX[0],EnemyExists[0])){
+    CollisionDamage(getX,EnemyX[0]);
+    if(pos[0]==false){
+    getX-=30;
+    System.out.println(PlayerHealth);
+    repaint();
+    }
+    else if(pos[0]==true){
+        getX+=30;
+        System.out.println(PlayerHealth);
+        repaint();
+    }
+    repaint();
+    }
+    else if(event.CollisionDetect(getX, EnemyX[1],EnemyExists[1])){
+    CollisionDamage(getX,EnemyX[1]);
+    if(pos[0]==false){
+    getX-=30;
+    repaint();
+    }
+    if(pos[0]==true){
+        getX+=30;
+        repaint();
+    }
+    repaint();
+    }
+          if(Fossil==true){
+             g.drawString("+1 Alien Fossil Collected",10,100);
+         }
+    }
+    public static void CollisionDamage(int PlayerPos,int EnemyPos){
+        PlayerHealth-=5;
+    }
+    private class PlayerMove implements KeyListener{
+        public void keyTyped(KeyEvent e) {
+            
+        }
+        public void keyPressed(KeyEvent e) {
+            if(e.getKeyCode()==KeyEvent.VK_D){
+              getX+=20;
+              pos[0]=false;
+              repaint();
+                    if(getX>950&&EnemyExists[0]==false&&EnemyExists[1]==false){
+       Scene3 Map2 = new Scene3(PlayerHealth,Fossils);
+       Map2.setVisible(true);
+       Map2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       Map2.setResizable(false);
+       Map2.setSize(1000,800);
+       Map2.setFocusable(true);
+       Map2.setTitle("Mario Exoplanets");
+    }
+          }
+        if(e.getKeyCode()==KeyEvent.VK_A){
+            getX-=10;
+            pos[0]=true;
+            repaint();
+        }
+        if(e.getKeyCode()==KeyEvent.VK_SPACE){
+            JumpMove ko = new JumpMove();
+            Gravity = new Thread(ko);
+            Gravity.start();
+            repaint();
+        }
+        if(e.getKeyCode()==KeyEvent.VK_CONTROL){
+            attack=true;
+              if(EnemyX[0]+10==getX||EnemyX[0]-10==getX||EnemyX[0]+5==getX||EnemyX[0]-5==getX||EnemyX[0]+2==getX||EnemyX[0]-2==getX||EnemyX[0]==getX){
+                  EnemyHealth[0]-=20;
+                  EnemyExists[0]=false;
+                  MessageFossils  m = new MessageFossils ();
+                  Thread h = new Thread(m);
+                  h.start();
+                  attack=true;
+                  repaint();
+              }
+              else if(EnemyX[1]+10==getX||EnemyX[1]-10==getX||EnemyX[1]+5==getX||EnemyX[1]-5==getX||EnemyX[1]+2==getX||EnemyX[1]-2==getX||EnemyX[1]==getX){
+                  EnemyHealth[1]-=20;
+                  EnemyExists[1]=false;
+                  MessageFossils  m = new MessageFossils ();
+                  Thread h = new Thread(m);
+                  h.start();
+                  attack=true;
+                  repaint();
+              }
+                  else if(EnemyX[2]+10==getX||EnemyX[2]-10==getX||EnemyX[2]+5==getX||EnemyX[2]-5==getX||EnemyX[2]+2==getX||EnemyX[2]-2==getX||EnemyX[2]==getX){
+                  EnemyHealth[2]-=20;
+                  EnemyExists[2]=false;
+                  MessageFossils  m = new MessageFossils ();
+                  Thread h = new Thread(m);
+                  h.start();
+                  attack=true;
+                  repaint();
+              }
+              repaint();
+        }
+        }
+        public void keyReleased(KeyEvent e) {
+           
+        }
+        
+    }
+     public class JumpMove implements Runnable{
+        public void run() {
+            {
+                try {
+                    Thread.sleep(1);
+                    getY-=20;
+                    if(getY<=740){
+                        Thread.sleep(4500);
+                        getY+=20;
+                        repaint();
+                    }
+                    else{
+                        getY=640;
+                    }
+                    repaint();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GamePlay.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+       
+   } 
+}
+    public class EnemyMove implements Runnable{
+       public void run(){
+           try {
+               while(1>0){
+               for(int i=0;i<10;i++){
+               Random Timer = new Random();
+               Random Position = new Random();
+               Thread.sleep(Timer.nextInt(400));
+               EnemyX[0]+=15;
+               Enemypos[0]=true;
+               EnemyX[1]-=5;
+               Enemypos[1]=false;
+               repaint();
+                EnemyX[2]-=10;
+               Enemypos[2]=false;
+               repaint();
+             
+               }
+               for(int i=0;i<10;i++){
+               Random Timer = new Random();
+               Random Position = new Random();
+               Thread.sleep(Timer.nextInt(400));
+               EnemyX[0]-=10;
+               Enemypos[0]=false;
+               repaint();
+               EnemyX[1]+=10;
+               Enemypos[1]=true;
+               repaint();
+                 EnemyX[2]+=5;
+               Enemypos[2]=true;
+               repaint();
+               }
+           }
+           }
+               catch (InterruptedException ex) {
+               Logger.getLogger(Scene2.class.getName()).log(Level.SEVERE, null, ex);
+           }
+               }
+       }
