@@ -4,4 +4,3 @@ My first game I developed in Java when I was 15. A basic mario game in a space s
 <img src="screenshot 1.png"></img>
 <img src="screenshot 2.png"></img>
 <img src="screenshot 3 (1).png"></img>
-<img src="screenshot 3.png"></img>
